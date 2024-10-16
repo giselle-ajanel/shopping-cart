@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="lib/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+
+    <title>Assignment #6: DOM Manipulation</title>
+    <style>
+        .item-remove {
+            cursor: pointer;
+            color: #CCC;
+        }
+
+        .item-remove:hover {
+            color: #dc3545;
+        }
+
+        .item-remove:active {
+            color: #ba1323;
+        }
+
+        .category-label {
+            padding: 5px 10px;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .technology {
+            background-color: #5764db;
+        }
+
+        .clothing {
+            background-color: #94b36d;
+        }
+
+        .groceries {
+            background-color: #cf757e;
+        }
+
+        img.item-image {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+
+<body class="py-4">
+
+    <div class="container">
+        <div class="row">
+            <h1 class="col-12">Shopping Cart</h1>
+        </div> <!-- row -->
+
+
+        <div class="row mt-4">
+            <h2 class="col-12">Items</h2>
+            <div class="col-12 mt-4">
+                <form id="items-shopping">
+                    <div class="form-row">
+                        <div class="col-12 mt-2 col-sm-6 mt-sm-0">
+                            <label for="item-name" class="sr-only">Item Name:</label>
+
+                            <input type="text" class="form-control" id="item-name" placeholder="Item Name">
+
+                            <small id="item-name-error" class="form-text text-danger"></small>
+
+                        </div> <!-- .col -->
+
+                        <div class="col-12 mt-2 col-sm-3 mt-sm-0">
+                            <label for="category" class="sr-only">Category:</label>
+
+                            <select id="category" class="form-control">
+                                <option value="">Category</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Groceries">Groceries</option>
+                            </select>
+
+                            <small id="category-error" class="form-text text-danger"></small>
+
+                        </div> <!-- .col -->
+
+                        <div class="col-12 mt-2 col-sm-3 mt-sm-0">
+                            <label for="image-url" class="sr-only">Image URL:</label>
+
+                            <input type="text" class="form-control" id="image-url" placeholder="Image URL">
+                        </div>
+
+                        <div class="col-12 mt-2 col-sm-auto mt-sm-0">
+                            <button type="submit" class="btn btn-primary">Add Item</button>
+                        </div> <!-- .col -->
+                    </div> <!-- .form-row -->
+                </form>
+            </div> <!-- .col -->
+        </div> <!-- .row -->
+
+
+        <div class="row">
+            <div class="col-12 col-sm-8 mt-3">
+
+                <button id="shopping-delete" class="btn btn-outline-danger mb-3">Delete All</button>
+
+                <ul id="shopping-list" class="list-group">
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="item">Macbook Pro</div>
+                        <div class="item-info">
+                            <span class="mr-3 category-label technology">Technology</span>
+                            <span class="item-remove oi oi-circle-x" title="Remove"></span>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="item">Low-rise jeans</div>
+                        <div class="item-info">
+                            <span class="mr-3 category-label clothing">Clothing</span>
+                            <span class="item-remove oi oi-circle-x" title="Remove"></span>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div class="item">Honeycrisp apples</div>
+                        <div class="item-info">
+                            <span class="mr-3 category-label groceries">Groceries</span>
+                            <span class="item-remove oi oi-circle-x" title="Remove"></span>
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div> <!-- .col -->
+        </div> <!-- .row -->
+    </div> <!-- container -->
+
+
+    <script>
+
+        function bindRemoveBtns() {
+            const removeButtons = document.querySelectorAll('.item-remove')
+
+            for (let i = 0; i < removeButtons.length; i++) {
+                removeButtons[i].onclick = function () {
+                    // console.log(this)
+                    // console.log(this.parentElement)
+                    // console.log(this.parentElement.parentElement)
+
+                    this.parentElement.parentElement.remove()
+                }
+            }
+        }
+
+        bindRemoveBtns()
+
+        document.querySelector("#shopping-delete").onclick = () => {
+            document.querySelector("#shopping-list").innerHTML = ''
+        }
+
+        document.querySelector("#items-shopping").onsubmit = (event) => {
+
+            event.preventDefault()
+
+            //input values
+            const inputValue1 = document.querySelector("#item-name").value.trim()
+            const inputValue2 = document.querySelector("#category").value.trim()
+            const inputValue3 = document.querySelector("#image-url").value.trim()
+
+            //validating fields that are required 
+            let validForm = true
+            if (!inputValue1) {
+                document.querySelector("#item-name-error").innerHTML = "Item name cannot be empty."
+                validForm = false
+            } else {
+                document.querySelector("#item-name-error").innerHTML = ""
+            }
+
+            if (!inputValue2) {
+                document.querySelector("#category-error").innerHTML = "Please select a category."
+                validForm = false
+            } else {
+                document.querySelector("#category-error").innerHTML = ""
+            }
+
+            if (!validForm) return;
+
+            // check
+            const items = document.querySelectorAll('#shopping-list .item')
+            for (let item of items) {
+                if (item.textContent.trim() === inputValue1) {
+                    alert("This item is already in the list.")
+                    return
+                }
+            }
+
+            
+            const li = document.createElement('li')
+            const divItem = document.createElement('div')
+            const divInfo = document.createElement('div')
+            const spanBadge = document.createElement('span')
+            const spanRemove = document.createElement('span')
+            const img = document.createElement('img')
+
+            
+            divItem.textContent = inputValue1
+            spanBadge.textContent = inputValue2
+            spanBadge.classList.add("mr-3", "category-label", inputValue2.toLowerCase())
+            spanRemove.classList.add("item-remove", "oi", "oi-circle-x")
+            spanRemove.title = "Remove"
+
+            //default image if empty
+            img.src = inputValue3 || "img/default.jpg"
+            img.alt = inputValue1;
+            img.classList.add("item-image")
+
+            
+            divInfo.appendChild(spanBadge)
+            divInfo.appendChild(spanRemove)
+            li.appendChild(divItem)
+            li.appendChild(divInfo)
+            li.appendChild(img)
+
+            
+            li.classList.add("list-group-item", "d-flex", "justify-content-between")
+            divItem.classList.add("item")
+            divInfo.classList.add("item-info")
+
+            
+            document.querySelector("#shopping-list").appendChild(li)
+
+            
+            bindRemoveBtns()
+
+            
+            document.querySelector("#items-shopping").reset()
+        }
+
+    </script>
+</body>
+
+
+</html>
